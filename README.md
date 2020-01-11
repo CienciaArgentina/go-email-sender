@@ -10,8 +10,8 @@
 ## Index
 1. [Introduction](#introduction)
 2. [Setup](#setup)
-3. [Environment Variables](#environmentvariables)
-4. [API Usage](#apiusage)
+3. [Environment Variables](#environment-variables)
+4. [API Usage](#api-usage)
 
 
 ---
