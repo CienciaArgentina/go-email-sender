@@ -4,4 +4,3 @@ type ConfirmationMailBody struct {
 	Name string
 	Token string
 }
-
