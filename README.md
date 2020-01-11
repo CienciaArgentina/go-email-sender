@@ -10,7 +10,8 @@
 ## Index
 1. [Introduction](#introduction)
 2. [Setup](#setup)
-3. [Environment Variables](#environment-variables)
+3. [Environment Variables](#environmentvariables)
+4. [Usage](#usage)
 
 
 ---
@@ -50,3 +51,20 @@ Open up your `~/.bashrc` or `~/.bash_profile` (if you're using zsh maybe you sho
 #### macOS
 
 Same as Linux
+
+## API Usage
+
+Send a HTTP request using a `POST` method with the following body
+
+```json
+{
+  "to": ["john@doe.com"],
+  "template": "confirm-email",
+  "data": {
+    "name": "John Doe",
+    "token": "F4K3-T0K3N"
+  }
+}
+```
+
+Data is a dynamic type, which will be created in `templatebodies.go` and later on reflect will parse the request data into the desired template
