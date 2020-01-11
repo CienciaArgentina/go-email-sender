@@ -7,7 +7,7 @@ const (
 	Identity                  = ""
 	CienciaArgentinaEmail     = "EMAIL_USERNAME"
 	CienciaArgentinaPassword  = "EMAIL_PASSWORD"
-	CienciaArgentinaEmailSmtp = "smtp.gmail.com"
+	CienciaArgentinaEmailSmtp = "EMAIL_SMTP"
 	CienciaArgentinaEmailSmtpPort = "smtp.gmail.com:587"
 
 	// Email Metadata
@@ -17,5 +17,5 @@ const (
 	Ping = "/ping"
 	PostEmail = "/email"
 
-	Port = ":8080"
+	DefaultPort = ":8080"
 )

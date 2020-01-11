@@ -94,7 +94,7 @@ func (e *EmailSenderService) ParseTemplate(dto commons.DTO) *commons.BaseRespons
 
 func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
 	formattedMsg := []byte(e.TemplateInfo.Subject + defines.Mime + "\n" + e.Body)
-	if err := smtp.SendMail(defines.CienciaArgentinaEmailSmtpPort, e.GetAuth(), "cienciaargentinadev@gmail.com", dto.To, formattedMsg); err != nil {
+	if err := smtp.SendMail(defines.CienciaArgentinaEmailSmtpPort, e.GetAuth(), os.Getenv(defines.CienciaArgentinaEmail), dto.To, formattedMsg); err != nil {
 		return commons.NewBaseResponse(http.StatusBadRequest, nil, err, defines.StringEmpty)
 	}
 
