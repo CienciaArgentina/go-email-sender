@@ -6,10 +6,10 @@ import (
 )
 
 type TemplateInfo struct {
-	Type string
-	Subject string
+	Type     string
+	Subject  string
 	Filename string
-	Entity interface{}
+	Entity   interface{}
 }
 
 var TemplateMap map[string]TemplateInfo
