@@ -11,7 +11,7 @@
 1. [Introduction](#introduction)
 2. [Setup](#setup)
 3. [Environment Variables](#environmentvariables)
-4. [Usage](#usage)
+4. [API Usage](#apiusage)
 
 
 ---
