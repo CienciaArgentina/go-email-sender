@@ -11,7 +11,7 @@ const (
 	CienciaArgentinaEmailSmtpPort = "smtp.gmail.com:587"
 
 	// Email Metadata
-	Mime = "MIME-version: 1.0;\nContent-Type: text/plain; charset=\"UTF-8\";\n\n"
+	Mime = "MIME-version: 1.0;\nContent-Type: text/HTML;"
 
 	// API Endpoints
 	Ping = "/ping"

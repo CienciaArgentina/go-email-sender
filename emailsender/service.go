@@ -41,7 +41,7 @@ func (e *EmailSenderService) GetAuth() smtp.Auth {
 		defines.Identity,
 		username,
 		password,
-		defines.CienciaArgentinaEmailSmtp,
+		mailSmtp,
 	)
 
 	return auth
@@ -103,8 +103,8 @@ func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
 
 func NewService(templateHelper ...commons.ITemplateHelper) *EmailSenderService {
 
-	if templateHelper[0] == nil {
-		templateHelper[0] = commons.NewHelper()
+	if len(templateHelper) == 0 {
+		templateHelper = append(templateHelper, commons.NewHelper())
 	}
 
 	return &EmailSenderService{
