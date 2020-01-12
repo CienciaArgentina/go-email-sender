@@ -2,7 +2,7 @@
 
 ![alt](/docs/images/gopher-email.jpeg?raw=true)
 <p align="center">
-<sup>If you're the owner of this image, please send us an email an we will remove it (if that's what you want) asap</sup>
+<sup>If you're the owner of this image, please send us an email and we will remove it (if that's what you want) asap</sup>
 </p>
 
 ---

@@ -23,10 +23,14 @@ func (emctl *EmailController) SendEmail(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusBadRequest, commons.NewBaseResponse(http.StatusBadRequest, nil, err, defines.StringEmpty))
 	}
+
+	result := emctl.Service.InvokeEmailSender(dto)
+
+	c.JSON(result.Code, result)
 }
 
 func NewController() *EmailController {
-	controller := EmailController{Service: NewService()}
+	controller := EmailController{Service: NewService(&commons.TemplateHelper{})}
 	return &controller
 }
 

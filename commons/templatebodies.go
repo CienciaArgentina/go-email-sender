@@ -1,6 +1,6 @@
 package commons
 
 type ConfirmationMailBody struct {
-	Name string
+	Name  string
 	Token string
 }

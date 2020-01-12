@@ -5,11 +5,15 @@ import (
 	"github.com/CienciaArgentina/email-sender/defines"
 )
 
+const (
+	BaseTemplatePath = "../templates/"
+)
+
 type TemplateInfo struct {
-	Type string
-	Subject string
+	Type     string
+	Subject  string
 	Filename string
-	Entity interface{}
+	Entity   interface{}
 }
 
 var TemplateMap map[string]TemplateInfo
@@ -19,7 +23,7 @@ func init() {
 
 	TemplateMap[defines.ConfirmEmail] = TemplateInfo{
 		Type:     defines.ConfirmEmail,
-		Filename: fmt.Sprintf("%s.html", defines.ConfirmEmail),
+		Filename: fmt.Sprintf("%s%s.html", BaseTemplatePath ,defines.ConfirmEmail),
 		Subject:  "Confirma tu email",
 		Entity:   ConfirmationMailBody{},
 	}

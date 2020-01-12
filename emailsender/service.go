@@ -19,7 +19,7 @@ type IEmailSenderService interface {
 }
 
 type EmailSenderService struct{
-	TemplateHelper commons.TemplateHelper
+	TemplateHelper commons.ITemplateHelper
 	EmailFormat
 }
 
@@ -41,7 +41,7 @@ func (e *EmailSenderService) GetAuth() smtp.Auth {
 		defines.Identity,
 		username,
 		password,
-		defines.CienciaArgentinaEmailSmtp,
+		mailSmtp,
 	)
 
 	return auth
@@ -55,7 +55,7 @@ func (e *EmailSenderService) InvokeEmailSender(dto commons.DTO) *commons.BaseRes
 
 	parseTemplateResult := e.ParseTemplate(dto)
 
-	if parseTemplateResult.Error != "" {
+	if parseTemplateResult.Code != http.StatusOK {
 		return parseTemplateResult
 	}
 
@@ -89,7 +89,7 @@ func (e *EmailSenderService) ParseTemplate(dto commons.DTO) *commons.BaseRespons
 
 	e.Body = buf.String()
 
-	return nil
+	return commons.NewBaseResponse(http.StatusOK, nil, nil, defines.StringEmpty)
 }
 
 func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
@@ -101,8 +101,13 @@ func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
 	return nil
 }
 
-func NewService() *EmailSenderService {
+func NewService(templateHelper ...commons.ITemplateHelper) *EmailSenderService {
+
+	if len(templateHelper) == 0 {
+		templateHelper = append(templateHelper, commons.NewHelper())
+	}
+
 	return &EmailSenderService{
-		TemplateHelper: commons.TemplateHelper{},
+		TemplateHelper: templateHelper[0],
 	}
 }
