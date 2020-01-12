@@ -10,8 +10,9 @@ import (
 
 type ITemplateHelper interface {
 	GetTemplateByName(template string, data interface{}) (*TemplateInfo, error)
-	CheckIfTemplateFileExist(templateFile *string) bool
-	CreateBodyFromInterface(template TemplateInfo, data interface{}) (*TemplateInfo, error)
+	CheckIfTemplateFileExist(templateFile string) bool
+	CreateBodyForTemplate(template TemplateInfo, data interface{}) (*TemplateInfo, error)
+	CreateBodyFromInterface(templateEntity interface{}, data interface{}) (interface{}, error)
 }
 
 type TemplateHelper struct {
@@ -143,4 +144,8 @@ func (t *TemplateHelper) CreateBodyFromInterface(templateEntity interface{}, dat
 	}
 
 	return templateEntity, nil
+}
+
+func NewHelper() *TemplateHelper {
+	return &TemplateHelper{}
 }

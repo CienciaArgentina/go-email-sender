@@ -26,7 +26,7 @@ func (emctl *EmailController) SendEmail(c *gin.Context) {
 }
 
 func NewController() *EmailController {
-	controller := EmailController{Service: NewService()}
+	controller := EmailController{Service: NewService(&commons.TemplateHelper{})}
 	return &controller
 }
 

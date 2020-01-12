@@ -19,7 +19,7 @@ type IEmailSenderService interface {
 }
 
 type EmailSenderService struct{
-	TemplateHelper commons.TemplateHelper
+	TemplateHelper commons.ITemplateHelper
 	EmailFormat
 }
 
@@ -101,8 +101,13 @@ func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
 	return nil
 }
 
-func NewService() *EmailSenderService {
+func NewService(templateHelper ...commons.ITemplateHelper) *EmailSenderService {
+
+	if templateHelper[0] == nil {
+		templateHelper[0] = commons.NewHelper()
+	}
+
 	return &EmailSenderService{
-		TemplateHelper: commons.TemplateHelper{},
+		TemplateHelper: templateHelper[0],
 	}
 }
