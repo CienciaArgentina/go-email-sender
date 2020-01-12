@@ -55,7 +55,7 @@ func (e *EmailSenderService) InvokeEmailSender(dto commons.DTO) *commons.BaseRes
 
 	parseTemplateResult := e.ParseTemplate(dto)
 
-	if parseTemplateResult.Error != "" {
+	if parseTemplateResult.Code != http.StatusOK {
 		return parseTemplateResult
 	}
 
@@ -89,7 +89,7 @@ func (e *EmailSenderService) ParseTemplate(dto commons.DTO) *commons.BaseRespons
 
 	e.Body = buf.String()
 
-	return nil
+	return commons.NewBaseResponse(http.StatusOK, nil, nil, defines.StringEmpty)
 }
 
 func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
