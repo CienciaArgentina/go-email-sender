@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/CienciaArgentina/email-sender/emailsender"
+	"github.com/CienciaArgentina/go-email-sender/emailsender"
 )
 
 func main() {

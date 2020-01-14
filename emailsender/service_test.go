@@ -3,8 +3,8 @@ package emailsender
 import (
 	"errors"
 	"fmt"
-	"github.com/CienciaArgentina/email-sender/commons"
-	"github.com/CienciaArgentina/email-sender/defines"
+	"github.com/CienciaArgentina/go-email-sender/commons"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"net/http"

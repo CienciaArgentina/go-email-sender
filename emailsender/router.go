@@ -1,7 +1,7 @@
 package emailsender
 
 import (
-	"github.com/CienciaArgentina/email-sender/defines"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 	"github.com/gin-gonic/gin"
 	"os"
 )

@@ -3,8 +3,8 @@ package emailsender
 import (
 	"net/http"
 
-	"github.com/CienciaArgentina/email-sender/commons"
-	"github.com/CienciaArgentina/email-sender/defines"
+	"github.com/CienciaArgentina/go-email-sender/commons"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 	"github.com/gin-gonic/gin"
 )
 

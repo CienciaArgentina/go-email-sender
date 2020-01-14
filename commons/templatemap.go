@@ -2,7 +2,7 @@ package commons
 
 import (
 	"fmt"
-	"github.com/CienciaArgentina/email-sender/defines"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 )
 
 const (
