@@ -3,7 +3,7 @@ package commons
 import (
 	"errors"
 	"fmt"
-	"github.com/CienciaArgentina/email-sender/defines"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 	"os"
 	"reflect"
 )
@@ -15,7 +15,6 @@ type ITemplateHelper interface {
 }
 
 type TemplateHelper struct {
-
 }
 
 func (t *TemplateHelper) GetTemplateByName(template string, data interface{}) (*TemplateInfo, error) {
@@ -29,7 +28,7 @@ func (t *TemplateHelper) GetTemplateByName(template string, data interface{}) (*
 	}
 
 	templateFileExists := t.CheckIfTemplateFileExist(templateToBeSent.Filename)
-	if templateFileExists != true {
+	if !templateFileExists {
 		return nil, errors.New(defines.TemplateFileDoesNotExist)
 	}
 
@@ -42,7 +41,7 @@ func (t *TemplateHelper) GetTemplateByName(template string, data interface{}) (*
 }
 
 func (t *TemplateHelper) CheckIfTemplateFileExist(templateFile string) bool {
-	path := fmt.Sprintf("../templates/%s", templateFile)
+	path := fmt.Sprintf("./templates/%s", templateFile)
 	info, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		return false
@@ -54,8 +53,9 @@ func (t *TemplateHelper) CreateBodyForTemplate(template TemplateInfo, data inter
 	var err error
 	switch template.Type {
 	case defines.ConfirmEmail:
-		template.Entity, err = t.CreateBodyFromInterface(&ConfirmationMailBody{}, data)
-		template.Entity = template.Entity.(*ConfirmationMailBody)
+		template.Entity = &ConfirmationMailBody{TokenizedUrl: data.(string)}
+	case defines.ForgotUsername:
+		template.Entity = &ForgotUsernameBody{Username: data.(string)}
 	}
 
 	return &template, err
@@ -74,6 +74,11 @@ func (t *TemplateHelper) CreateBodyFromInterface(templateEntity interface{}, dat
 	// Get the type and names of the properties of the data struct
 	dataElems := reflect.ValueOf(data)
 	dataTypes := dataElems.Type()
+	if dataTypes.Kind() == reflect.Ptr && dataTypes.Elem().Kind() == reflect.Struct {
+		dataTypes = dataTypes.Elem()
+	} else {
+		return nil, errors.New(defines.TemplateBodyMismatch)
+	}
 	dataColumns := dataTypes.NumField()
 
 	// Check if the type is the same

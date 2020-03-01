@@ -1,7 +1,7 @@
 package commons
 
 import (
-	"github.com/CienciaArgentina/email-sender/defines"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -20,7 +20,7 @@ func TestCheckIfTemplateFileExistShouldReturnErrorWhenFileDoesNotExist(t *testin
 
 func TestCreateBodyFromInterface(t *testing.T) {
 	// Given
-	expectedBody := ConfirmationMailBody{Name: "Juan", Token:"1234"}
+	expectedBody := ConfirmationMailBody{Name: "Juan", Token: "1234"}
 	dto := NewDTO("", expectedBody, defines.ConfirmEmail)
 	helper := TemplateHelper{}
 

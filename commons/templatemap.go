@@ -2,7 +2,7 @@ package commons
 
 import (
 	"fmt"
-	"github.com/CienciaArgentina/email-sender/defines"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 )
 
 type TemplateInfo struct {
@@ -22,5 +22,12 @@ func init() {
 		Filename: fmt.Sprintf("%s.html", defines.ConfirmEmail),
 		Subject:  "Confirma tu email",
 		Entity:   ConfirmationMailBody{},
+	}
+
+	TemplateMap[defines.ForgotUsername] = TemplateInfo{
+		Type:     defines.ForgotUsername,
+		Filename: fmt.Sprintf("%s.html", defines.ForgotUsername),
+		Subject:  "Recuperar nombre de usuario",
+		Entity:   ForgotUsernameBody{},
 	}
 }

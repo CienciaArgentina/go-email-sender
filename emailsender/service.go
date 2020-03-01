@@ -3,8 +3,9 @@ package emailsender
 import (
 	"bytes"
 	"errors"
-	"github.com/CienciaArgentina/email-sender/commons"
-	"github.com/CienciaArgentina/email-sender/defines"
+	"fmt"
+	"github.com/CienciaArgentina/go-email-sender/commons"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 	"html/template"
 	"net/http"
 	"net/smtp"
@@ -18,7 +19,7 @@ type IEmailSenderService interface {
 	SendEmail(dto commons.DTO) *commons.BaseResponse
 }
 
-type EmailSenderService struct{
+type EmailSenderService struct {
 	TemplateHelper commons.TemplateHelper
 	EmailFormat
 }
@@ -37,11 +38,11 @@ func (e *EmailSenderService) GetAuth() smtp.Auth {
 	if commons.IsNilOrEmpty(username) || commons.IsNilOrEmpty(password) || commons.IsNilOrEmpty(mailSmtp) {
 		panic(defines.EmailAuthIsEmpty)
 	}
-		auth := smtp.PlainAuth(
+	auth := smtp.PlainAuth(
 		defines.Identity,
 		username,
 		password,
-		defines.CienciaArgentinaEmailSmtp,
+		"smtp.gmail.com",
 	)
 
 	return auth
@@ -70,13 +71,14 @@ func (e *EmailSenderService) InvokeEmailSender(dto commons.DTO) *commons.BaseRes
 
 func (e *EmailSenderService) ParseTemplate(dto commons.DTO) *commons.BaseResponse {
 	var err error
+	var result commons.BaseResponse
 	e.TemplateInfo, err = e.TemplateHelper.GetTemplateByName(dto.Template, dto.Data)
 	if err != nil {
 		result := commons.NewBaseResponse(http.StatusBadRequest, nil, err, defines.StringEmpty)
 		return result
 	}
 
-	template, err := template.ParseFiles(e.TemplateInfo.Filename)
+	template, err := template.ParseFiles(fmt.Sprintf("./templates/%s", e.TemplateInfo.Filename))
 	if err != nil {
 		result := commons.NewBaseResponse(http.StatusBadRequest, nil, err, defines.StringEmpty)
 		return result
@@ -89,13 +91,13 @@ func (e *EmailSenderService) ParseTemplate(dto commons.DTO) *commons.BaseRespons
 
 	e.Body = buf.String()
 
-	return nil
+	return &result
 }
 
 func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
 	formattedMsg := []byte(e.TemplateInfo.Subject + defines.Mime + "\n" + e.Body)
 	if err := smtp.SendMail(defines.CienciaArgentinaEmailSmtpPort, e.GetAuth(), os.Getenv(defines.CienciaArgentinaEmail), dto.To, formattedMsg); err != nil {
-		return commons.NewBaseResponse(http.StatusBadRequest, nil, err, defines.StringEmpty)
+		return commons.NewBaseResponse(http.StatusInternalServerError, nil, err, defines.StringEmpty)
 	}
 
 	return nil

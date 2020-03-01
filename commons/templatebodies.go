@@ -1,6 +1,9 @@
 package commons
 
 type ConfirmationMailBody struct {
-	Name  string
-	Token string
+	TokenizedUrl string
+}
+
+type ForgotUsernameBody struct {
+	Username string
 }

@@ -1,10 +1,12 @@
 package emailsender
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 
-	"github.com/CienciaArgentina/email-sender/commons"
-	"github.com/CienciaArgentina/email-sender/defines"
+	"github.com/CienciaArgentina/go-email-sender/commons"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,17 +19,23 @@ type EmailController struct {
 }
 
 func (emctl *EmailController) SendEmail(c *gin.Context) {
-	var dto commons.DTO
+	dto := commons.DTO{}
 
-	err := c.BindJSON(dto)
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(c.Request.Body)
+
+	err := json.Unmarshal(buf.Bytes(), &dto)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, commons.NewBaseResponse(http.StatusBadRequest, nil, err, defines.StringEmpty))
+		c.AbortWithStatusJSON(http.StatusBadRequest, commons.NewBaseResponse(http.StatusBadRequest, nil, err, defines.StringEmpty))
+		return
 	}
+
+	result := emctl.Service.InvokeEmailSender(dto)
+	c.JSON(result.Code, result)
+	return
 }
 
 func NewController() *EmailController {
 	controller := EmailController{Service: NewService()}
 	return &controller
 }
-
-
