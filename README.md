@@ -2,7 +2,7 @@
 
 ![alt](/docs/images/gopher-email.jpeg?raw=true)
 <p align="center">
-<sup>If you're the owner of this image, please send us an email an we will remove it (if that's what you want) asap</sup>
+<sup>If you're the owner of this image, please send us an email and we will remove it (if that's what you want) asap</sup>
 </p>
 
 ---
@@ -12,6 +12,7 @@
 2. [Setup](#setup)
 3. [Environment Variables](#environment-variables)
 4. [API Usage](#api-usage)
+5. [Build the image](#build-the-image)
 
 
 ---
@@ -26,7 +27,7 @@ This is just self-explanatory, `POST` an `/email` and then send it.
 ## Environment Variables
 
 These are the environment variables you need to make this awesome service work
-``` shell
+``` shell script
     EMAILSENDER_PORT    <PORT>
     EMAIL_USERNAME      <USERNAME>
     EMAIL_PASSWORD      <PASSWORD>
@@ -44,7 +45,7 @@ Open up your command prompt and type
 
 Open up your `~/.bashrc` or `~/.bash_profile` (if you're using zsh maybe you should edit `~/.zshrc`) and add a line for each variable like this
 
-``` shell
+```shell script
     export ENVIRONMENT_VARIABLE_NAME  <VALUE>
 ```
 
@@ -68,3 +69,16 @@ Send a HTTP request using a `POST` method with the following body
 ```
 
 Data is a dynamic type, which will be created in `templatebodies.go` and later on reflect will parse the request data into the desired template
+
+## Build the image
+To run this program with Docker you should execute the following commands
+
+```shell script
+docker build -t cienciaargentina:goemailsender -f Dockerfile . 
+```
+
+Then
+
+```shell script
+docker run cienciaargentina:goemailsender   
+```
