@@ -20,14 +20,14 @@ func init() {
 	TemplateMap[defines.ConfirmEmail] = TemplateInfo{
 		Type:     defines.ConfirmEmail,
 		Filename: fmt.Sprintf("%s.html", defines.ConfirmEmail),
-		Subject:  "Confirma tu email",
+		Subject:  "Ciencia Argentina - Confirma tu email",
 		Entity:   ConfirmationMailBody{},
 	}
 
 	TemplateMap[defines.ForgotUsername] = TemplateInfo{
 		Type:     defines.ForgotUsername,
 		Filename: fmt.Sprintf("%s.html", defines.ForgotUsername),
-		Subject:  "Recuperar nombre de usuario",
+		Subject:  "Ciencia Argentina - Recuperar nombre de usuario",
 		Entity:   ForgotUsernameBody{},
 	}
 }

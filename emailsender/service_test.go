@@ -74,8 +74,8 @@ func TestParseTemplateShouldReturnNoError(t *testing.T) {
 
 func createDtoWithData() commons.DTO {
 	return commons.DTO{
-		To:       []string {"juan@carlos.com"},
-		Data:     commons.ConfirmationMailBody{
+		To: []string{"juan@carlos.com"},
+		Data: commons.ConfirmationMailBody{
 			Name:  "Juan",
 			Token: "T0K3N",
 		},

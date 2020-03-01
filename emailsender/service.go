@@ -95,7 +95,7 @@ func (e *EmailSenderService) ParseTemplate(dto commons.DTO) *commons.BaseRespons
 }
 
 func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
-	formattedMsg := []byte(e.TemplateInfo.Subject + defines.Mime + "\n" + e.Body)
+	formattedMsg := []byte(fmt.Sprintf("Subject: %s\n%s\n\n%s", e.TemplateInfo.Subject, defines.Mime, e.Body))
 	if err := smtp.SendMail(defines.CienciaArgentinaEmailSmtpPort, e.GetAuth(), os.Getenv(defines.CienciaArgentinaEmail), dto.To, formattedMsg); err != nil {
 		return commons.NewBaseResponse(http.StatusInternalServerError, nil, err, defines.StringEmpty)
 	}
