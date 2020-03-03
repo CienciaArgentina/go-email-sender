@@ -7,3 +7,7 @@ type ConfirmationMailBody struct {
 type ForgotUsernameBody struct {
 	Username string
 }
+
+type SendPasswordResetBody struct {
+	URL string
+}
