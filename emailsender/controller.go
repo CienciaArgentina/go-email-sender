@@ -40,3 +40,4 @@ func NewController() *EmailController {
 	controller := EmailController{Service: NewService()}
 	return &controller
 }
+
