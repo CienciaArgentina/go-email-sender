@@ -7,7 +7,7 @@
 
 ---
 
-## IIndex
+## Index
 1. [Introduction](#introduction)
 2. [Setup](#setup)
 3. [Environment Variables](#environment-variables)
