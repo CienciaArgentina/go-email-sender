@@ -1,5 +1,8 @@
 package defines
 
 const (
-	ConfirmEmail = "confirmemail"
+	ConfirmEmail   = "confirmemail"
+	ForgotUsername = "forgotusername"
+	SendPasswordReset = "sendpasswordreset"
+	PasswordResetNotification = "passwordresetnotification"
 )

@@ -3,8 +3,8 @@ package emailsender
 import (
 	"errors"
 	"fmt"
-	"github.com/CienciaArgentina/email-sender/commons"
-	"github.com/CienciaArgentina/email-sender/defines"
+	"github.com/CienciaArgentina/go-email-sender/commons"
+	"github.com/CienciaArgentina/go-email-sender/defines"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 	"net/http"
@@ -74,8 +74,8 @@ func TestParseTemplateShouldReturnNoError(t *testing.T) {
 
 func createDtoWithData() commons.DTO {
 	return commons.DTO{
-		To:       []string {"juan@carlos.com"},
-		Data:     commons.ConfirmationMailBody{
+		To: []string{"juan@carlos.com"},
+		Data: commons.ConfirmationMailBody{
 			Name:  "Juan",
 			Token: "T0K3N",
 		},
