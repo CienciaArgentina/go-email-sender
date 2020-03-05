@@ -33,6 +33,7 @@ func (emctl *EmailController) SendEmail(c *gin.Context) {
 	result := emctl.Service.InvokeEmailSender(dto)
 	c.JSON(result.Code, result)
 	return
+
 }
 
 func NewController() *EmailController {
