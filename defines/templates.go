@@ -4,4 +4,5 @@ const (
 	ConfirmEmail   = "confirmemail"
 	ForgotUsername = "forgotusername"
 	SendPasswordReset = "sendpasswordreset"
+	PasswordResetNotification = "passwordresetnotification"
 )

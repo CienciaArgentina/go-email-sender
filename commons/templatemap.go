@@ -37,4 +37,11 @@ func init() {
 		Subject:  "Ciencia Argentina - Reestablecer contraseña",
 		Entity:   SendPasswordResetBody{},
 	}
+
+	TemplateMap[defines.PasswordResetNotification] = TemplateInfo{
+		Type:     defines.PasswordResetNotification,
+		Filename: fmt.Sprintf("%s.html", defines.PasswordResetNotification),
+		Subject:  "Ciencia Argentina - Contraseña reestablecida",
+		Entity:   nil,
+	}
 }
