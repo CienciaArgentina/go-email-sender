@@ -1,4 +1,4 @@
-# Email Sender
+# Email Sender!
 
 ![alt](/docs/images/gopher-email.jpeg?raw=true)
 <p align="center">
