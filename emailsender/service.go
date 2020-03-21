@@ -42,7 +42,7 @@ func (e *EmailSenderService) GetAuth() smtp.Auth {
 		defines.Identity,
 		username,
 		password,
-		"smtp.gmail.com",
+		mailSmtp,
 	)
 
 	return auth

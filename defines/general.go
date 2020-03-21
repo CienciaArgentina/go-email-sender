@@ -7,8 +7,8 @@ const (
 	Identity                      = ""
 	CienciaArgentinaEmail         = "EMAIL_USERNAME"
 	CienciaArgentinaPassword      = "EMAIL_PASSWORD"
-	CienciaArgentinaEmailSmtp     = "EMAIL_SMTP"
-	CienciaArgentinaEmailSmtpPort = "EMAL_SMTP_PORT"
+	CienciaArgentinaEmailSmtp     = "EMAIL_SMTP" // ex. smtp.gmail.com
+	CienciaArgentinaEmailSmtpPort = "EMAL_SMTP_PORT" // ex smtp.gmail.com:PORT
 
 	// Email Metadata
 	Mime = "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
