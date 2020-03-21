@@ -17,7 +17,7 @@ func InitRouter(controller IEmailController) {
 	gin.ForceConsoleColor()
 	Router.RedirectTrailingSlash = true
 	Router.RedirectFixedPath = true
-	port := os.Getenv("EMAILSENDER_PORT")
+	port := os.Getenv(defines.Port)
 	if port == "" {
 		port = defines.DefaultPort
 	}
