@@ -20,8 +20,8 @@ func TestCheckIfTemplateFileExistShouldReturnErrorWhenFileDoesNotExist(t *testin
 
 func TestCreateBodyFromInterface(t *testing.T) {
 	// Given
-	expectedBody := ConfirmationMailBody{Name: "Juan", Token: "1234"}
-	dto := NewDTO("", expectedBody, defines.ConfirmEmail)
+	expectedBody := ConfirmationMailBody{TokenizedUrl: "asd"}
+	dto := NewDTO([]string{""}, expectedBody, defines.ConfirmEmail)
 	helper := TemplateHelper{}
 
 	// When
