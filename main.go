@@ -6,6 +6,5 @@ import (
 
 func main() {
 	emailSenderController := emailsender.NewController()
-
 	emailsender.InitRouter(emailSenderController)
 }
