@@ -47,7 +47,7 @@ func TestInvokeEmailSenderShouldReturnErrorWhenDTOIsNil(t *testing.T) {
 func TestParseTemplateShouldReturnErrorWhenTemplateDoesNotExist(t *testing.T) {
 	// Given
 	helperMock := new(TemplateHelperMock)
-	service := NewService(helperMock)
+	service := NewService( )
 	dto := createDtoWithData()
 	helperMock.On(defines.GetTemplateByName, dto.Template, dto.Data).Return(&commons.TemplateInfo{}, errors.New(defines.TemplateDoesNotExist))
 
@@ -58,26 +58,11 @@ func TestParseTemplateShouldReturnErrorWhenTemplateDoesNotExist(t *testing.T) {
 	require.Equal(t, http.StatusBadRequest, result.Code)
 }
 
-func TestParseTemplateShouldReturnNoError(t *testing.T) {
-	// Given
-	helperMock := new(TemplateHelperMock)
-	service := NewService(helperMock)
-	dto := createDtoWithData()
-	helperMock.On(defines.GetTemplateByName, dto.Template, dto.Data).Return(createTemplateInfoWithData(), nil)
-
-	// When
-	result := service.ParseTemplate(dto)
-
-	// Then
-	require.Equal(t, http.StatusOK, result.Code)
-}
-
 func createDtoWithData() commons.DTO {
 	return commons.DTO{
 		To: []string{"juan@carlos.com"},
 		Data: commons.ConfirmationMailBody{
-			Name:  "Juan",
-			Token: "T0K3N",
+			TokenizedUrl: "asdf",
 		},
 		Template: defines.ConfirmEmail,
 	}
