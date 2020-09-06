@@ -3,14 +3,13 @@ package emailsender
 import (
 	"bytes"
 	"crypto/tls"
-	"errors"
 	"fmt"
+	"github.com/CienciaArgentina/go-backend-commons/pkg/apierror"
+	"github.com/CienciaArgentina/go-backend-commons/pkg/clog"
 	"github.com/CienciaArgentina/go-email-sender/commons"
 	"github.com/CienciaArgentina/go-email-sender/defines"
 	"html/template"
-	"log"
 	"net"
-	"net/http"
 	"net/smtp"
 	"os"
 )
@@ -51,15 +50,14 @@ func (e *EmailSenderService) GetAuth() smtp.Auth {
 	return auth
 }
 
-func (e *EmailSenderService) InvokeEmailSender(dto commons.DTO) *commons.BaseResponse {
+func (e *EmailSenderService) InvokeEmailSender(dto commons.DTO) apierror.ApiError {
 	if &dto == (commons.NewDTO(nil, nil, "")) {
-		result := commons.NewBaseResponse(http.StatusBadRequest, nil, errors.New(defines.DataCantBeNil), defines.StringEmpty)
-		return result
+		return apierror.NewBadRequestApiError(defines.DataCantBeNil)
 	}
 
 	parseTemplateResult := e.ParseTemplate(dto)
 
-	if parseTemplateResult.Error != "" {
+	if parseTemplateResult != nil {
 		return parseTemplateResult
 	}
 
@@ -69,47 +67,35 @@ func (e *EmailSenderService) InvokeEmailSender(dto commons.DTO) *commons.BaseRes
 		return emailSendResult
 	}
 
-	return commons.NewBaseResponse(http.StatusOK, nil, nil, "")
+	return nil
 }
 
-func (e *EmailSenderService) ParseTemplate(dto commons.DTO) *commons.BaseResponse {
+func (e *EmailSenderService) ParseTemplate(dto commons.DTO) apierror.ApiError {
 	var err error
-	var result commons.BaseResponse
 	e.TemplateInfo, err = e.TemplateHelper.GetTemplateByName(dto.Template, dto.Data)
 	if err != nil {
-		result := commons.NewBaseResponse(http.StatusBadRequest, nil, err, defines.StringEmpty)
-		return result
+		clog.Error("GetTemplateByName error", "parse-template", err, nil)
+		return apierror.NewBadRequestApiError(err.Error())
 	}
 
 	template, err := template.ParseFiles(fmt.Sprintf("./templates/%s", e.TemplateInfo.Filename))
 	if err != nil {
-		result := commons.NewBaseResponse(http.StatusBadRequest, nil, err, defines.StringEmpty)
-		return result
+		clog.Error("ParseFiles error", "parse-template", err, nil)
+		return apierror.NewBadRequestApiError(err.Error())
 	}
 
 	buf := new(bytes.Buffer)
 	if err := template.Execute(buf, e.TemplateInfo.Entity); err != nil {
-		return commons.NewBaseResponse(http.StatusInternalServerError, nil, err, defines.StringEmpty)
+		clog.Error("Execute template error", "parse-template", err, nil)
+		return apierror.NewInternalServerApiError(err.Error(), err, "execute_template")
 	}
 
 	e.Body = buf.String()
 
-	return &result
+	return nil
 }
 
-func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
-	//// Setup headers
-	//headers := make(map[string]string)
-	//headers["From"] = "noreply@cienciaargentina.com"
-	//headers["To"] = dto.To[0]
-	//headers["Subject"] = e.TemplateInfo.Subject
-	//
-	////message := ""
-	////for k,v := range headers {
-	////	message += fmt.Sprintf("%s: %s\r\n", k, v)
-	////}
-	////message += "\r\n" + e.Body
-
+func (e *EmailSenderService) SendEmail(dto commons.DTO) apierror.ApiError {
 	servername := "smtp.zoho.com:465"
 
 	host, _, _ := net.SplitHostPort(servername)
@@ -124,51 +110,52 @@ func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
 
 	conn, err := tls.Dial("tcp", servername, tlsconfig)
 	if err != nil {
-		log.Panic(err)
+		clog.Error("Dial error", "send-email", err, nil)
+		return apierror.NewInternalServerApiError("Dial error", err, "email_error")
 	}
 
 	c, err := smtp.NewClient(conn, host)
 	if err != nil {
-		log.Panic(err)
+		clog.Error("Error starting email client", "send-email", err, nil)
+		return apierror.NewInternalServerApiError("Error starting email client", err, "email_error")
 	}
 
 	// Auth
 	if err = c.Auth(auth); err != nil {
-		log.Panic(err)
+		clog.Error("Auth error", "send-email", err, nil)
 	}
 
 	// To && From
 	if err = c.Mail("noreply@cienciaargentina.com"); err != nil {
-		log.Panic(err)
+		clog.Error("Mail error", "send-email", err, nil)
+		return apierror.NewInternalServerApiError("Mail error", err, "email_error")
 	}
 
 	if err = c.Rcpt(dto.To[0]); err != nil {
-		log.Panic(err)
+		clog.Error("Receipt error", "send-email", err, nil)
+		return apierror.NewInternalServerApiError("Receipt error", err, "email_error")
 	}
 
 	// Data
 	w, err := c.Data()
 	if err != nil {
-		log.Panic(err)
+		clog.Error("Data error", "send-email", err, nil)
+		return apierror.NewInternalServerApiError("Data error", err, "email_error")
 	}
 
 	formattedMsg := []byte(fmt.Sprintf("Subject: %s\n%s\n\n%s", e.TemplateInfo.Subject, defines.Mime, e.Body))
 
 	_, err = w.Write(formattedMsg)
 	if err != nil {
-		log.Panic(err)
+		clog.Error("Write error", "send-email", err, nil)
+		return apierror.NewInternalServerApiError("Write error", err, "email_error")
 	}
 
 	err = w.Close()
 	if err != nil {
-		log.Panic(err)
+		clog.Error("Close error", "send-email", err, nil)
+		return apierror.NewInternalServerApiError("Close error", err, "email_error")
 	}
-
-
-	//if err := smtp.SendMail("smtp.zoho.com:587", e.GetAuth(), "noreply@cienciaargentina.com", dto.To, formattedMsg); err != nil {
-	//	return commons.NewBaseResponse(http.StatusInternalServerError, nil, err, defines.StringEmpty)
-	//}
-
 	return nil
 }
 

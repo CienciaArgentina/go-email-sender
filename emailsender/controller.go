@@ -30,8 +30,10 @@ func (emctl *EmailController) SendEmail(c *gin.Context) {
 		return
 	}
 
-	result := emctl.Service.InvokeEmailSender(dto)
-	c.JSON(result.Code, result)
+	apierr := emctl.Service.InvokeEmailSender(dto)
+	if err != nil {
+		c.JSON(apierr.Status(), apierr)
+	}
 	return
 
 }
