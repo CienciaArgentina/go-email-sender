@@ -40,9 +40,9 @@ func (e *EmailSenderService) GetAuth() smtp.Auth {
 	}
 	auth := smtp.PlainAuth(
 		defines.Identity,
-		username,
+		"noreply@cienciaargentina.com",
 		password,
-		mailSmtp,
+		"smtp.zoho.com",
 	)
 
 	return auth
@@ -96,7 +96,7 @@ func (e *EmailSenderService) ParseTemplate(dto commons.DTO) *commons.BaseRespons
 
 func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
 	formattedMsg := []byte(fmt.Sprintf("Subject: %s\n%s\n\n%s", e.TemplateInfo.Subject, defines.Mime, e.Body))
-	if err := smtp.SendMail(defines.CienciaArgentinaEmailSmtpPort, e.GetAuth(), os.Getenv(defines.CienciaArgentinaEmail), dto.To, formattedMsg); err != nil {
+	if err := smtp.SendMail("smtp.zoho.com:587", e.GetAuth(), "noreply@cienciaargentina.com", dto.To, formattedMsg); err != nil {
 		return commons.NewBaseResponse(http.StatusInternalServerError, nil, err, defines.StringEmpty)
 	}
 

@@ -53,7 +53,8 @@ func (t *TemplateHelper) CreateBodyForTemplate(template TemplateInfo, data inter
 	var err error
 	switch template.Type {
 	case defines.ConfirmEmail:
-		template.Entity = &ConfirmationMailBody{TokenizedUrl: data.(string)}
+		url := data.(map[string]interface{})
+		template.Entity = &ConfirmationMailBody{TokenizedUrl: url["url"].(string)}
 	case defines.ForgotUsername:
 		template.Entity = &ForgotUsernameBody{Username: data.(string)}
 	case defines.SendPasswordReset:
