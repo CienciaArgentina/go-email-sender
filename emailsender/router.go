@@ -21,7 +21,6 @@ func InitRouter(controller IEmailController) {
 	if port == "" {
 		port = defines.DefaultPort
 	}
-
 	Router.Run(port)
 }
 

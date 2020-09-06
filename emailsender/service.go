@@ -2,11 +2,14 @@ package emailsender
 
 import (
 	"bytes"
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"github.com/CienciaArgentina/go-email-sender/commons"
 	"github.com/CienciaArgentina/go-email-sender/defines"
 	"html/template"
+	"log"
+	"net"
 	"net/http"
 	"net/smtp"
 	"os"
@@ -95,10 +98,76 @@ func (e *EmailSenderService) ParseTemplate(dto commons.DTO) *commons.BaseRespons
 }
 
 func (e *EmailSenderService) SendEmail(dto commons.DTO) *commons.BaseResponse {
-	formattedMsg := []byte(fmt.Sprintf("Subject: %s\n%s\n\n%s", e.TemplateInfo.Subject, defines.Mime, e.Body))
-	if err := smtp.SendMail("smtp.zoho.com:587", e.GetAuth(), "noreply@cienciaargentina.com", dto.To, formattedMsg); err != nil {
-		return commons.NewBaseResponse(http.StatusInternalServerError, nil, err, defines.StringEmpty)
+	//// Setup headers
+	//headers := make(map[string]string)
+	//headers["From"] = "noreply@cienciaargentina.com"
+	//headers["To"] = dto.To[0]
+	//headers["Subject"] = e.TemplateInfo.Subject
+	//
+	////message := ""
+	////for k,v := range headers {
+	////	message += fmt.Sprintf("%s: %s\r\n", k, v)
+	////}
+	////message += "\r\n" + e.Body
+
+	servername := "smtp.zoho.com:465"
+
+	host, _, _ := net.SplitHostPort(servername)
+
+	auth := smtp.PlainAuth("","noreply@cienciaargentina.com", os.Getenv(defines.CienciaArgentinaPassword), host)
+
+	// TLS config
+	tlsconfig := &tls.Config {
+		InsecureSkipVerify: true,
+		ServerName: host,
 	}
+
+	conn, err := tls.Dial("tcp", servername, tlsconfig)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	c, err := smtp.NewClient(conn, host)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	// Auth
+	if err = c.Auth(auth); err != nil {
+		log.Panic(err)
+	}
+
+	// To && From
+	if err = c.Mail("noreply@cienciaargentina.com"); err != nil {
+		log.Panic(err)
+	}
+
+	if err = c.Rcpt(dto.To[0]); err != nil {
+		log.Panic(err)
+	}
+
+	// Data
+	w, err := c.Data()
+	if err != nil {
+		log.Panic(err)
+	}
+
+	formattedMsg := []byte(fmt.Sprintf("Subject: %s\n%s\n\n%s", e.TemplateInfo.Subject, defines.Mime, e.Body))
+
+	_, err = w.Write(formattedMsg)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	err = w.Close()
+	if err != nil {
+		log.Panic(err)
+	}
+
+
+	//if err := smtp.SendMail("smtp.zoho.com:587", e.GetAuth(), "noreply@cienciaargentina.com", dto.To, formattedMsg); err != nil {
+	//	return commons.NewBaseResponse(http.StatusInternalServerError, nil, err, defines.StringEmpty)
+	//}
 
 	return nil
 }
