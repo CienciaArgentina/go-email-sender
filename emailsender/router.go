@@ -1,6 +1,7 @@
 package emailsender
 
 import (
+	"github.com/CienciaArgentina/go-backend-commons/pkg/rest"
 	"github.com/CienciaArgentina/go-email-sender/defines"
 	"github.com/gin-gonic/gin"
 	"os"
@@ -17,6 +18,7 @@ func InitRouter(controller IEmailController) {
 	gin.ForceConsoleColor()
 	Router.RedirectTrailingSlash = true
 	Router.RedirectFixedPath = true
+	Router.Use(rest.SetContextInformation)
 	port := os.Getenv(defines.Port)
 	if port == "" {
 		port = defines.DefaultPort

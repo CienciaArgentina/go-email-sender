@@ -6,12 +6,15 @@ import (
 	"fmt"
 	"github.com/CienciaArgentina/go-backend-commons/pkg/apierror"
 	"github.com/CienciaArgentina/go-backend-commons/pkg/clog"
+	"github.com/CienciaArgentina/go-backend-commons/pkg/performance"
+	"github.com/CienciaArgentina/go-backend-commons/pkg/rest"
 	"github.com/CienciaArgentina/go-email-sender/commons"
 	"github.com/CienciaArgentina/go-email-sender/defines"
 	"html/template"
 	"net"
 	"net/smtp"
 	"os"
+	"time"
 )
 
 type IEmailSenderService interface {
@@ -50,42 +53,54 @@ func (e *EmailSenderService) GetAuth() smtp.Auth {
 	return auth
 }
 
-func (e *EmailSenderService) InvokeEmailSender(dto commons.DTO) apierror.ApiError {
+func (e *EmailSenderService) InvokeEmailSender(dto commons.DTO, ctx *rest.ContextInformation) apierror.ApiError {
 	if &dto == (commons.NewDTO(nil, nil, "")) {
 		return apierror.NewBadRequestApiError(defines.DataCantBeNil)
 	}
 
-	parseTemplateResult := e.ParseTemplate(dto)
-
-	if parseTemplateResult != nil {
-		return parseTemplateResult
+	var apierr apierror.ApiError
+	performance.TrackTime(time.Now(), "ParseTemplate", ctx, func() {
+		apierr = e.ParseTemplate(dto, ctx)
+	})
+	if apierr != nil {
+		return apierr
 	}
 
-	emailSendResult := e.SendEmail(dto)
+	performance.TrackTime(time.Now(), "SendEmail", ctx, func() {
+		apierr = e.SendEmail(dto)
+	})
 
-	if emailSendResult != nil {
-		return emailSendResult
+	if apierr != nil {
+		return apierr
 	}
 
 	return nil
 }
 
-func (e *EmailSenderService) ParseTemplate(dto commons.DTO) apierror.ApiError {
+func (e *EmailSenderService) ParseTemplate(dto commons.DTO, ctx *rest.ContextInformation) apierror.ApiError {
 	var err error
-	e.TemplateInfo, err = e.TemplateHelper.GetTemplateByName(dto.Template, dto.Data)
+	performance.TrackTime(time.Now(), "GetTemplateByName", ctx, func() {
+		e.TemplateInfo, err = e.TemplateHelper.GetTemplateByName(dto.Template, dto.Data)
+	})
 	if err != nil {
 		clog.Error("GetTemplateByName error", "parse-template", err, nil)
 		return apierror.NewBadRequestApiError(err.Error())
 	}
 
-	template, err := template.ParseFiles(fmt.Sprintf("./templates/%s", e.TemplateInfo.Filename))
+	var template *template.Template
+	performance.TrackTime(time.Now(), "ParseFiles", ctx, func() {
+		template, err = template.ParseFiles(fmt.Sprintf("./templates/%s", e.TemplateInfo.Filename))
+	})
 	if err != nil {
 		clog.Error("ParseFiles error", "parse-template", err, nil)
 		return apierror.NewBadRequestApiError(err.Error())
 	}
 
 	buf := new(bytes.Buffer)
-	if err := template.Execute(buf, e.TemplateInfo.Entity); err != nil {
+	performance.TrackTime(time.Now(), "ExecuteTemplate", ctx, func() {
+		err = template.Execute(buf, e.TemplateInfo.Entity)
+	})
+	if err != nil {
 		clog.Error("Execute template error", "parse-template", err, nil)
 		return apierror.NewInternalServerApiError(err.Error(), err, "execute_template")
 	}

@@ -3,6 +3,7 @@ package emailsender
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/CienciaArgentina/go-backend-commons/pkg/rest"
 	"net/http"
 
 	"github.com/CienciaArgentina/go-email-sender/commons"
@@ -20,6 +21,7 @@ type EmailController struct {
 
 func (emctl *EmailController) SendEmail(c *gin.Context) {
 	dto := commons.DTO{}
+	ctx := rest.GetContextInformation("SendEmail", c)
 
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(c.Request.Body)
@@ -30,7 +32,7 @@ func (emctl *EmailController) SendEmail(c *gin.Context) {
 		return
 	}
 
-	apierr := emctl.Service.InvokeEmailSender(dto)
+	apierr := emctl.Service.InvokeEmailSender(dto, ctx)
 	if err != nil {
 		c.JSON(apierr.Status(), apierr)
 	}
