@@ -13,12 +13,13 @@ var (
 
 func InitRouter(controller IEmailController) {
 	Router = gin.Default()
+	Router.Use(rest.SetContextInformation)
 	ConfigureRoutes(Router, controller)
 
 	gin.ForceConsoleColor()
 	Router.RedirectTrailingSlash = true
 	Router.RedirectFixedPath = true
-	Router.Use(rest.SetContextInformation)
+
 	port := os.Getenv(defines.Port)
 	if port == "" {
 		port = defines.DefaultPort

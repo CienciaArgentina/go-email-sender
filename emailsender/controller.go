@@ -3,8 +3,11 @@ package emailsender
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/CienciaArgentina/go-backend-commons/pkg/apierror"
+	"github.com/CienciaArgentina/go-backend-commons/pkg/performance"
 	"github.com/CienciaArgentina/go-backend-commons/pkg/rest"
 	"net/http"
+	"time"
 
 	"github.com/CienciaArgentina/go-email-sender/commons"
 	"github.com/CienciaArgentina/go-email-sender/defines"
@@ -32,8 +35,12 @@ func (emctl *EmailController) SendEmail(c *gin.Context) {
 		return
 	}
 
-	apierr := emctl.Service.InvokeEmailSender(dto, ctx)
-	if err != nil {
+	var apierr apierror.ApiError
+	performance.TrackTime(time.Now(), "InvokeEmailSender", ctx, func() {
+		apierr = emctl.Service.InvokeEmailSender(dto, ctx)
+	})
+
+	if apierr != nil {
 		c.JSON(apierr.Status(), apierr)
 	}
 	return
